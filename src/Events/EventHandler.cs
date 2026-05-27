@@ -31,7 +31,7 @@ public class BotEventHandler(DiscordSocketClient client,InteractionService inter
             if (Activator.CreateInstance(eventType) is not IBotEvent botEvent)
             {
                 throw new InvalidOperationException(
-                    $"Failed to instantiate event type {eventType.Name}. Ensure it has a parameterless constructor.");
+                    $"Failed to create instance of event type {eventType.Name}.");
             }
 
             botEvent.Register(_client, _interactionService);

@@ -5,6 +5,7 @@ using Discord.Interactions;
 using Discord.WebSocket;
 using edbot.Commands;
 using edbot.Events;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace edbot;
 
@@ -18,7 +19,12 @@ public class Program {
 
         _client = new DiscordSocketClient(new DiscordSocketConfig {MessageCacheSize = 100}); 
         var interactionService = new InteractionService(_client.Rest);
-        _interactionHandler = new InteractionHandler(_client, interactionService, new NullServiceProvider());
+        var services = new ServiceCollection()
+            .AddSingleton(_client)
+            .AddSingleton(interactionService)
+            .BuildServiceProvider();
+
+        _interactionHandler = new InteractionHandler(_client, interactionService, services);
         _eventHandler = new BotEventHandler(_client, interactionService);
 
         await _interactionHandler.InitializeAsync();
@@ -35,10 +41,5 @@ public class Program {
     private static Task Log(LogMessage msg) {
         Console.WriteLine(msg.ToString());
         return Task.CompletedTask;
-    }
-
-    private sealed class NullServiceProvider : IServiceProvider
-    {
-        public object? GetService(Type serviceType) => null;
     }
 }

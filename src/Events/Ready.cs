@@ -10,7 +10,7 @@ public class ReadyEvent : IBotEvent
 {
     public void Register(DiscordSocketClient client, InteractionService interactionService)
     {
-        client.Ready += async () => await Handler(client, interactionService);
+        client.Ready += () => Handler(client, interactionService);
     }
 
     public static async Task Handler(DiscordSocketClient client, InteractionService interactionService) 
