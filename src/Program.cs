@@ -10,17 +10,19 @@ namespace edbot;
 
 public class Program {
     private static DiscordSocketClient? _client; 
+    private static InteractionHandler? _interactionHandler;
+    private static BotEventHandler? _eventHandler;
 
     public static async Task Main() {
         DotNetEnv.Env.Load();
 
         _client = new DiscordSocketClient(new DiscordSocketConfig {MessageCacheSize = 100}); 
         var interactionService = new InteractionService(_client.Rest);
-        var interactionHandler = new InteractionHandler(_client, interactionService, new EmptyServiceProvider());
-        var eventHandler = new BotEventHandler(_client, interactionService);
+        _interactionHandler = new InteractionHandler(_client, interactionService, new NullServiceProvider());
+        _eventHandler = new BotEventHandler(_client, interactionService);
 
-        await interactionHandler.InitializeAsync();
-        eventHandler.Initialize();
+        await _interactionHandler.InitializeAsync();
+        _eventHandler.Initialize();
 
         _client.Log += Log; 
 
@@ -35,7 +37,7 @@ public class Program {
         return Task.CompletedTask;
     }
 
-    private sealed class EmptyServiceProvider : IServiceProvider
+    private sealed class NullServiceProvider : IServiceProvider
     {
         public object? GetService(Type serviceType) => null;
     }
