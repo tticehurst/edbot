@@ -1,9 +1,10 @@
 ﻿using System;
-using System.Threading.Tasks; // Added for Task
+using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
+using edbot.Events;
 
-namespace edbot.src;
+namespace edbot;
 
 public class Program {
     private static DiscordSocketClient? _client; 
@@ -11,8 +12,10 @@ public class Program {
     public static async Task Main() {
         DotNetEnv.Env.Load();
 
-        _client = new DiscordSocketClient(); 
+        _client = new DiscordSocketClient(new DiscordSocketConfig {MessageCacheSize = 100}); 
         _client.Log += Log; 
+
+        new BotEventHandler(_client).Initialize();
 
         await _client.LoginAsync(TokenType.Bot, Environment.GetEnvironmentVariable("TOKEN"));
         await _client.StartAsync();
