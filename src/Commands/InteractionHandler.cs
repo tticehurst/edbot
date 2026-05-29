@@ -29,8 +29,8 @@ public class InteractionHandler(DiscordSocketClient client, InteractionService i
         }catch (Exception ex)
         {
             Console.WriteLine($"Error handling interaction: {ex}");
-           if (interaction.Type == InteractionType.ApplicationCommand)
-                await interaction.GetOriginalResponseAsync().ContinueWith(async (msg) => await interaction.RespondAsync("An error occurred while executing this command.", ephemeral: true));
+            if (interaction.Type == InteractionType.ApplicationCommand)
+                await interaction.GetOriginalResponseAsync().ContinueWith(async (msg) => await interaction.RespondAsync($"An error occurred while executing this command.\n{ex.ToString()}", ephemeral: true));
         }
     }
 
